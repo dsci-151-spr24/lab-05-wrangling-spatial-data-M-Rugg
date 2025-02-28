@@ -100,7 +100,7 @@ We'll need to calculate two distances for it: (1) distance between Denny's 1 and
 
 3.  How many pairings are there between all Denny's and all La Quinta locations in Alaska, i.e. how many distances do we need to calculate between the locations of these establishments in Alaska?
 
-***There are 6 pairingsbetween all Denny's and all La Quinta's location in Alaska.***
+***There are 6 pairings between all Denny's and all La Quinta's location in Alaska.***
 
 In order to calculate these distances we need to first restructure our data to pair the Denny's and La Quinta locations.
 To do so, we will join the two data frames.
@@ -216,24 +216,110 @@ dn_lq_ak_mindist <- dn_lq_ak %>%
 ``` {r}
 
 ggplot(dn_lq_ak_mindist, aes(x = closest)) +
-  geom_density() +
+  geom_histogram() +
   labs(title = "Minimum distance between Denny's and La Quinta's", subtitle = "Alaska", x = "Distance", y = "Density")
 
 dn_lq_ak_mindist %>%
   summarise(mean_dist = mean(closest))
 ```
 
-The average distance between Denny's and La Quinta's locations is 4.41. From the visualization, we can see that most appear to be around 5.5 km.
+***The average distance between Denny's and La Quinta's locations is 4.41 km. From the visualization, we can see that 2 of the 3 location distances are above 5 km. The min is around 2 km and the max is around 6 km.***
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
 9.  Repeat the same analysis for North Carolina: (i) filter Denny's and La Quinta Data Frames for NC, (ii) join these data frames to get a completelist of all possible pairings, (iii) calculate the distances between all possible pairings of Denny's and La Quinta in NC, (iv) find the minimum distance between each Denny's and La Quinta location, (v) visualize and describe the distribution of these shortest distances using appropriate summary statistics.
 
+```{r}
+dn_nc <- dennys %>%
+  filter(state == "NC")
+nrow(dn_nc)
+
+lq_nc <- laquinta %>%
+  filter(state == "NC")
+nrow(lq_nc)
+
+dn_lq_nc <- full_join(dn_nc, lq_nc, by = "state")
+
+dn_lq_nc <- dn_lq_nc %>%
+  mutate(distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y, round = 3))
+
+dn_lq_nc_mindist <- dn_lq_nc %>%
+  group_by(address.x) %>%
+  summarise(closest = min(distance))
+
+ggplot(dn_lq_nc_mindist, aes(x = closest)) +
+  geom_histogram() +
+  labs(title = "Minimum distance between Denny's and La Quinta's", subtitle = "North Carolina", x = "Distance", y = "Density")
+
+dn_lq_nc_mindist %>%
+  summarise(mean_dist = mean(closest))
+```
+
+***The average distance between Denny's and La Quinta's locations is 65.4 km. From the visualization, we can see that the data has a clear mode around 40 km, and a possible secondary mode near 115 km. The data is skewed to the high end. The min is around 0 km and the max is around 175.***
+
 10. Repeat the same analysis for Texas.
+
+```{r}
+dn_tx <- dennys %>%
+  filter(state == "TX")
+nrow(dn_tx)
+
+lq_tx <- laquinta %>%
+  filter(state == "TX")
+nrow(lq_tx)
+
+dn_lq_tx <- full_join(dn_tx, lq_tx, by = "state")
+
+dn_lq_tx <- dn_lq_tx %>%
+  mutate(distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y, round = 3))
+
+dn_lq_tx_mindist <- dn_lq_tx %>%
+  group_by(address.x) %>%
+  summarise(closest = min(distance))
+
+ggplot(dn_lq_tx_mindist, aes(x = closest)) +
+  geom_histogram() +
+  labs(title = "Minimum distance between Denny's and La Quinta's", subtitle = "Texas", x = "Distance", y = "Density")
+
+dn_lq_tx_mindist %>%
+  summarise(mean_dist = mean(closest))
+```
+
+***The average distance between Denny's and La Quinta's locations is 5.79 km. From the visualization, we can see that the data has a clear mode around 0 km (less than 1). The data, however, is skewed to the high end. The min is around 0 km and the max is around 60 km.***
 
 11. Repeat the same analysis for a state of your choosing, different than the ones we covered so far.
 
+```{r}
+dn_me <- dennys %>%
+  filter(state == "ME")
+nrow(dn_me)
+
+lq_me <- laquinta %>%
+  filter(state == "ME")
+nrow(lq_me)
+
+dn_lq_me <- full_join(dn_me, lq_me, by = "state")
+
+dn_lq_me <- dn_lq_me %>%
+  mutate(distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y, round = 3))
+
+dn_lq_me_mindist <- dn_lq_me %>%
+  group_by(address.x) %>%
+  summarise(closest = min(distance))
+
+ggplot(dn_lq_me_mindist, aes(x = closest)) +
+  geom_histogram() +
+  labs(title = "Minimum distance between Denny's and La Quinta's", subtitle = "Maine", x = "Distance", y = "Density")
+
+dn_lq_me_mindist %>%
+  summarise(mean_dist = mean(closest))
+```
+
+***The average distance between Denny's and La Quinta's locations is 86.57 km. From the visualization, we can see that the 2 of the 7 pairings has a distance of around 180 km. Most, however, have a distance of less than 100 km. The min is around 0 and the max is around 180.***
+
 12. Among the states you examined, where is Mitch Hedberg's joke most likely to hold true?
     Explain your reasoning.
+
+***Among the states I examined, Mitch Hedberg's joke is most likely to hold true in Alaska. For this state the mean was the lowest (4.91 km) and the max was substantially the lowest. The mean is also low in Texas (5.79 km), however the max is quite high (around 60 km).***
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards and review the md document on GitHub to make sure you're happy with the final state of your work.*
