@@ -339,14 +339,18 @@ This formula takes into account the fact that the earth is not flat, but instead
 <li>A parameter by which to round the responses</li>
 </ul>
 <ol start="6" style="list-style-type: decimal">
-<li><p>Calculate the distances between all pairs of Denny’s and La Quinta locations and save this variable as <code>distance</code>.
-Make sure to save this variable in THE <code>dn_lq_ak</code> data frame so that you can use it later.</p></li>
-<li><p>Calculate the minimum distance between a Denny’s and La Quinta for each Denny’s location.
-To do so we group by Denny’s locations and calculate a new variable that stores the information for the minimum distance.</p></li>
+<li>Calculate the distances between all pairs of Denny’s and La Quinta locations and save this variable as <code>distance</code>.
+Make sure to save this variable in THE <code>dn_lq_ak</code> data frame so that you can use it later.</li>
 </ol>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dn_lq_ak_mindist <span class="ot">&lt;-</span> dn_lq_ak <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">group_by</span>(address.x) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">closest =</span> <span class="fu">min</span>(distance))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dn_lq_ak <span class="ot">&lt;-</span> dn_lq_ak <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">distance =</span> <span class="fu">haversine</span>(longitude.x, latitude.x, longitude.y, latitude.y, <span class="at">round =</span> <span class="dv">3</span>))</span></code></pre></div>
+<ol start="7" style="list-style-type: decimal">
+<li>Calculate the minimum distance between a Denny’s and La Quinta for each Denny’s location.
+To do so we group by Denny’s locations and calculate a new variable that stores the information for the minimum distance.</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>dn_lq_ak_mindist <span class="ot">&lt;-</span> dn_lq_ak <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">group_by</span>(address.x) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">closest =</span> <span class="fu">min</span>(distance))</span></code></pre></div>
 <ol start="8" style="list-style-type: decimal">
 <li>Describe the distribution of the distances Denny’s and the nearest La Quinta locations in Alaska. Also include an appripriate visualization and relevant summary statistics.</li>
 </ol>
